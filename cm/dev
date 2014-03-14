@@ -1,0 +1,9 @@
+[default]
+192.168.33.20 ansible_ssh_user=vagrant
+
+[default:vars]
+deploy_user=vagrant
+database_name=coursify_vagrant
+server_name="coursify.va *.coursify.va"
+public_root="/var/www/coursify/current/public"
+rails_env=development
