@@ -37,16 +37,33 @@ set :keep_releases, 5
 
 namespace :deploy do
 
+  desc 'Setup'
+  task :setup do
+    on roles(:all) do
+      execute :sudo, "ln -s", "/etc/sv/coursify", "/etc/service/coursify"
+      execute :sudo, "ln -s", "/etc/sv/coursify_sidekiq", "/etc/service/coursify_sidekiq"
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "db:create", "db:migrate"
+        end
+      end
+    end
+  end
+  
   desc 'Restart application'
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
-      execute :sv, "restart", "coursify"
-      execute :sv, "restart", "coursify_sidekiq"
+      execute :sudo, :sv, "restart", "coursify"
+      execute :sudo, :sv, "restart", "coursify_sidekiq"
       # Your restart mechanism here, for example:
       # execute :touch, release_path.join('tmp/restart.txt')
     end
   end
 
+  before :setup, 'deploy:starting'
+  before :setup, 'deploy:updating'
+  before :setup, 'bundler:install'
+  
   after :publishing, :restart
 
   after :restart, :clear_cache do
@@ -57,5 +74,13 @@ namespace :deploy do
       # end
     end
   end
+end
 
+namespace :log do
+  desc "Watch tailf env log"
+  task :tailf do
+    on roles(:app) do
+      execute "tailf #{shared_path}/log/#{fetch(:rails_env)}.log"
+    end
+  end
 end

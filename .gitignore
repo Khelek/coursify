@@ -26,3 +26,5 @@ schema.rb
 secrets.yml
 *.rdb
 secrets.yml*
+
+.vagrant
