@@ -40,17 +40,6 @@
       authorized_key: user={{ deploy_user }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
 
     -
-      name: add repositories
-      apt_repository: repo={{ item }}
-      with_items:
-        - "ppa:brightbox/ruby-ng"
-        - "ppa:nginx/stable"
-
-    -
-      name: apt-get update
-      apt: update_cache=true cache_valid_time=3600
-
-    -
       name: install packages
       apt: pkg={{ item }} state=installed
       with_items:
@@ -74,6 +63,16 @@
         - postgresql-{{ postgresql.version }}
         - libpq-dev
         - python-psycopg2
+    -
+      name: add repositories
+      apt_repository: repo={{ item }}
+      with_items:
+        - "ppa:brightbox/ruby-ng"
+        - "ppa:nginx/stable"
+
+    -
+      name: apt-get update
+      apt: update_cache=true cache_valid_time=3600
 
     -
       name: switch ruby
