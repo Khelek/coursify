@@ -13,6 +13,12 @@
 
 
   tasks:
+
+    # -
+    #   name: install amon agent
+    #   sudo: yes
+    #   shell: curl -L https://amon.cx/install/i3in6nh2vhyjyfcjjdpqjdfefwb47gb6/ | bash
+
     -
       name: set locale
       lineinfile:
